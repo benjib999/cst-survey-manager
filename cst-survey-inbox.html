@@ -1,0 +1,443 @@
+
+<dom-module id="cst-survey-inbox">
+    <style>
+		.locationarea {
+            z-index: 1;
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+
+		@media (max-width: 600px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+
+        div.surveyInfo {
+			width: 65%;
+			height: 400px;
+            min-height: 400px;
+			overflow: auto;
+			margin: auto;
+			position: relative;
+			top: 100px; left: 0; bottom: 0; right: 0;
+			z-index: 100;
+			/*border: solid #D21027;*/
+		}
+
+		@media (max-width: 600px) {
+			div.surveyInfo {
+				top: 120px;
+			}
+		}
+
+		.locationarea {
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+
+		@media (max-width: 600px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+
+        .pie {
+            position: absolute;
+            top: 580px;
+            left: 40%;
+        }
+
+        @media (max-width: 1000px) {
+			.pie {
+            	position: absolute;
+            	top: 850px;
+            	left: 0%;
+			}
+        }
+
+		#dropDownBox {
+
+		}
+
+        .search-bar {
+            width: 56%;
+            height: 100px;
+            position: absolute;
+			top: 150px;
+            left: 450px;
+			float: right;
+        }
+
+        /*  */
+
+		table {
+			position:relative;
+			border-collapse: collapse;
+			border-spacing: 0;
+			width: 100%;
+			border: 1px solid #ddd;
+			overflow: auto;
+		}
+
+		th, td {
+			text-align: left;
+			padding: 8px;
+			width:300px;
+			border:1px solid #fff;
+		}
+
+		th {
+			background: #e3e4e5;
+		}
+
+		tr:nth-child(even){background-color: #f2f2f2}
+
+			input[type=text] {
+
+			border-right: none;
+			border-left: none;
+			border-top:none;
+			-webkit-transition: 0.5s;
+
+			outline: none;
+		}
+
+		input[type="text"]#feedbackText::-webkit-input-placeholder {
+			color: #e3e4e5;
+			font-size: 10px;
+		}
+
+		input[type=text]:focus {
+			border-bottom: 3px solid #555;
+			transition: 0.5s;
+		}
+
+		textarea#commentText::-webkit-input-placeholder{
+			color: #e3e4e5;
+			font-size: 10px;
+		}
+		.show{
+			-webkit-transition: opacity 2s !important;
+			-moz-transition: opacity 2s !important;
+			-o-transition: opacity 2s !important;
+			transition: opacity 2s !important;
+			opacity: 1 !important;
+		}
+
+
+		#toBeDisplayed{
+			display:none;
+			opacity:0;
+			-webkit-transition: opacity 2s;
+			-moz-transition: opacity 2s;
+			-o-transition: opacity 2s;
+			transition: opacity 2s;
+		}
+
+		#tick{
+			position: relative;
+			bottom:1.2cm;
+		}
+
+		#open{
+			position: relative;
+			margin-right:3cm;
+		}
+
+		.circleContainer {
+			width: 200px;
+			position: absolute;
+			height: 90px;
+			width: 90px;
+			top: 620px;
+			left: 29%;
+		}
+
+		@media (max-width: 600px) {
+			.circleContainer {
+				top: 700px;
+			}
+		}
+
+		#openArrow{
+			right:0;
+			 float: right;
+			 margin-right: 10px;
+			 opacity: 0;
+			 cursor: pointer;
+		}
+
+		#openArrow:hover{
+			opacity:1;
+		}
+        #dataTable{
+            @apply(--layout-vertical);
+            @apply(--layout-fit);
+        }
+        .gauge-style{
+            height: 40px;
+            width: 40px;
+            font-size: 8px;
+            margin: 0;
+
+        }
+        .icon-button{
+            height: 10px;
+            width: 10px;
+        }
+
+        paper-icon-button, iron-icon {
+            height: 40px;
+            width: 30px;
+            align-items: center;
+        }
+        
+    </style>
+
+    <template>
+
+        <triplat-ds id="openSurveys" name="openSurveys" filtered-data={{filteredSurveys}}>
+            <triplat-query append-filters="[[appendFilters]]">
+                <triplat-query-sort name="[[sortProperty]]" desc="[[sortDescending]]"></triplat-query-sort>
+                <triplat-query-page size="6"></triplat-query-page>
+            </triplat-query>
+        </triplat-ds>
+
+        <iron-icon class="locationarea" icon="location:V-2.0"></iron-icon>
+        <div class="locationarea">
+            <paper-icon-button on-tap="_openPopup" style="width: 20px; height: 20px; position: absolute; left: 87%;"></paper-icon-button>
+        </div>
+        <div class="search-bar">
+            <triplat-ds-search-input placeholder="Search Open Surveys" append-filters="{{appendFilters}}" aliases="{{aliases}}" max-header-children="2" search-icon-precede="true">
+            </triplat-ds-search-input>
+        </div>
+        <div class="surveyInfo" style="flex: 4;">
+            <triblock-table id="dataTable" data="[[filteredSurveys]]" sort-property="{{sortProperty}}" sort-descending="{{sortDescending}}" fixed-header>
+                <triblock-table-column class="large-fixed-width-column" title="Survey ID" property="id" sortable>
+                    <template>
+                        <div class="idField">
+                            <span class="dropdown-trigger">{{item.id}}</span>
+                            <paper-menu-button class="icon-button">
+                                <paper-icon-button icon="elipsis:elipsis" class="dropdown-trigger"></paper-icon-button>
+                                <paper-menu class="dropdown-content">
+                                    <paper-item on-tap="_onCompletedTapChild">{{_iconInfo(item)}}</paper-item>
+                                </paper-menu>
+                            </paper-menu-button>
+                        </div>
+
+                    </template>
+                </triblock-table-column>
+                <triblock-table-column class="large-fixed-width-column" title="Survey Type" property="surveyType" sortable></triblock-table-column>
+                <triblock-table-column class="small-fixed-width-column" title="Due Date" property="dueDate"></triblock-table-column>
+                <triblock-table-column class="small-fixed-width-column" title="Status" property="status" sortable></triblock-table-column>
+                <triblock-table-column class="large-fixed-width-column" title="Progress" property="totalSurveyScore" sortable>
+                    <template>
+                        <triplat-progress-gauge progress="[[_calculate(item.totalSurveyScore)]]" class="gauge-style"></triplat-progress-gauge>
+                    </template>
+                </triblock-table-column>
+            </triblock-table>
+<!--
+            <div class="surveyTable">
+                <table id="table" border="1">
+                    <tr>
+                        <th style="min-width: 200px;">TRIRIGA ID</th>
+                        <th style="min-width: 186px;">SURVEY TYPE</th>
+                        <th>DUE DATE</th>
+                        <th>STATUS</th>
+                        <th>PROGRESS</th>
+					</tr>
+					<tr>
+						<th>
+							Sort by:
+							<select id="dropDownBox" value="{{sortVal::change}}">
+								<option value="id">Tririga ID</option>
+								<option value="type">Survey Type</option>
+							</select>
+						</th>
+						<th>Filter: <input type="text" value="{{filterVal::input}}" /></th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+                    <template is="dom-repeat" items="{{openSurveys}}" filter="{{_filter(filterVal)}}" sort="{{_sort(sortVal)}}">
+                        <tr>
+                            <td>{{item.id}}</td>
+                            <td>{{item.name}}
+                                <paper-menu-button>
+                                    <paper-icon-button icon="elipsis:elipsis" class="dropdown-trigger" ></paper-icon-button>
+                                    <paper-menu class="dropdown-content">
+                                        <paper-item on-tap="_onCompletedTapChild">{{_iconInfo(item)}}</paper-item>
+                                    </paper-menu>
+                                </paper-menu-button>
+                            </td>
+                            <td>{{_dueDate(item.completedDate)}}</td>
+                            <td>{{item.status}}</td>
+                            <td>{{_progress(item)}}%</td>
+                        </tr>
+                    </template>
+                </table>
+            </div>
+-->
+        </div>
+        <div class="circleContainer">
+            <iron-icon style="position: absolute; height: 90px; width: 90px;" icon="circle:blue"></iron-icon>
+			<!-- <h1 style="position: absolute; top: 97%; left: 30.3% font-size: 20px;">10</h1> -->
+			<div style="position: absolute;  left: 18%; top: -30px">
+				<h1 style=" font-size: 40px;">10</h1>
+			</div>
+			<div style="position: absolute; left: 20%; top: 25px; ">
+				<h6> Surveys</h6>
+			</div>
+			<iron-icon style="position: absolute; height: 90px; width: 90px; left: 90%" icon="circle:red"></iron-icon>
+			<div style="position: absolute; left:118%; top: -30px">
+				<h1 style="font-size: 40px;">2</h1>
+			</div>
+			<div style="position: absolute; left: 110%; top: 25px;">
+				<h6> Overdue</h6>
+			</div>
+
+            <iron-icon icon="warning:V-2.0" style="position: absolute; left: 0%; top: 90%; height: 12px; width: 12px;"></iron-icon>
+            <p style="position: absolute; left: 27%; top: 80px; width: 200px;">You have one or more overdue surveys</p>
+        </div>
+        <google-chart
+            id="chart1"
+            class="pie"
+            type='pie'
+            options='{"title": "Distribution of Surveys",
+					  "backgroundColor": "transparent",
+					  "width": "600",
+					  "height": "450"}'
+            cols='[{"label":"Status", "type":"string"}, {"label":"No. complete", "type":"number"}]'
+			rows='[["Open", 21],["Started", 9],["Complete", 0]]'>
+		</google-chart>
+
+    </template>
+
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: "cst-survey-inbox",
+
+        properties: {
+            surveyId: {
+                type: "String",
+                notify: true,
+                readOnly:false
+            },
+
+            aliases: {
+                type: Object,
+                value: function(){
+                    var __dictionary__id = "Survey ID";
+                    var __dictionary__surveyType = "Survey Type";
+//                    var __dictionary__dueDate = "Due Date";
+                    var __dictionary__status = "Status";
+//                    var __dictionary__totalSurveyScore = "Progress";
+                    var _aliases = {};
+                        _aliases["id"] = {aliases: __dictionary__id, datasource: "openSurveys"};
+                        _aliases["surveyType"] = {aliases: __dictionary__surveyType, datasource: "openSurveys"};
+//                        _aliases["dueDate"] = {aliases: __dictionary__dueDate, datasource: "openSurveys"};
+                        _aliases["status"] = {aliases: __dictionary__status, datasource: "openSurveys"};
+//                        _aliases["totalSurveyScore"] = {aliases: __dictionary__totalSurveyScore, datasource: "openSurveys"};
+                    return _aliases;
+                }
+
+            },
+            appendFilters: {
+                type: Array,
+                value: []
+            }
+        },
+
+		_onCompletedTapChild: function(e) {
+            if(e.target.innerText==="Resume"){
+//                this.surveyId = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].rowData._id;
+                this.surveyId = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.__data__.rowData._id;
+                var selector = document.querySelector("cst-survey-manager-ab");
+                selector.surveyId = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.__data__.rowData._id;
+                console.log(selector.surveyId);
+                console.log(this.parentElement)
+//                console.log(e);
+//                console.log(e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.__data__.rowData._id);
+                this.fire('onStatsTapChild', {});
+            } else{
+                this.fire('onCompletedTapChild', {});
+            }
+
+
+		},
+
+		_openPopup: function(e) {
+			e.preventDefault();
+			this.fire('openPopupChild', {});
+		},
+
+		_dueDate: function(due) {
+			var date=new Date(due)
+			return(date.toLocaleDateString("en-us"));
+		},
+
+		_progress: function(item) {
+			progress = (item.surveyScore/item.totalSurveyScore) * 100;
+			if (isNaN(progress)) {
+				return 0;
+			}
+			else {
+				return (progress);
+			}
+		},
+
+        _iconInfo: function(item) {
+            if (this._progress(item) > 0) {
+                return "Resume";
+            }
+            else {
+                return "Start";
+            }
+        },
+
+		_filter: function(val) {
+			return function(item) {
+				if (!val) return true;
+				if (!item) return false;
+				return (item.name && ~item.name.indexOf(val));
+			};
+		},
+
+		_sort: function(val) {
+			switch(val) {
+				case 'id':
+				return function(a, b) {
+					if (a.id === b.id) return 0;
+					return a.id < b.id ? -1 : 1;
+				};
+				case 'type':
+				return function(a, b) {
+					if (a.name === b.name) return 0;
+					return a.name < b.name ? -1 : 1;
+				};
+			}
+		},
+
+        _calculate: function(item){
+            var progress = 0;
+            progress = item/100;
+            return progress;
+        },
+
+    });
+
+
+
+</script>
