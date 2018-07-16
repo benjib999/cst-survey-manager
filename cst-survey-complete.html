@@ -1,0 +1,156 @@
+<link rel="import" href="../triplat-icon/triplat-icon.html">
+<link rel="import" href="../triplat-select-input/triplat-select-input.html">
+<link rel="import" href="../triplat-ds/triplat-ds.html">
+<link rel="import" href="../triblock-popup/triblock-popup.html">
+<link rel="import" href="../triblock-responsive-layout/triblock-view-responsive-behavior.html">
+
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+
+<link rel="import" href="tricomp-search-popup.html">
+
+<dom-module id="cst-survey-complete">
+    <style>
+        div.surveyInfo {
+			min-width: 420px;
+			width: 50%;
+			height: 50%;
+			overflow: auto;
+			margin: auto;
+			position: absolute;
+			content: justified;
+			top: 180px; left: 0; bottom: 0; right: 0;
+			/*border: solid #D21027;*/
+		}
+
+		@media (max-width: 600px) {
+			div.surveyInfo {
+				top: 250px;
+			}
+		}
+
+		.locationarea {
+            z-index: 1;
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+
+		@media (max-width: 600px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+
+        .dueIcon {
+			position: absolute;
+			left: 10%;
+			top: 30%;
+			height: 502px;
+			width: 250px;
+		}
+
+		@media (max-width: 850px) {
+			.dueIcon {
+				display: none;
+			}
+		}
+
+    .location-container {
+				@apply(--layout-vertical);
+				@apply(--layout-center-justified);
+
+				font-size: 18px;
+        display: -webkit-box;
+        margin: 20px 50px;
+			}
+
+      .image-info {
+				@apply(--layout-horizontal);
+				@apply(--layout-start);
+
+        padding-right: 120px;
+			}
+
+      .search-icon {
+				border-left: 1px solid var(--ibm-gray-10);
+			}
+
+      .popup {
+			background: var(--triblock-popup-background-color);
+			@apply(--shadow-elevation-16dp);
+			padding: 30px;
+			@apply(--triblock-popup);
+		  }
+
+    </style>
+
+    <template>
+
+        <div class="location-container">
+			       <div class="image-info">
+				<!-- <triplat-image class="location-image" src="[[building.picture]]" width="[[imageWidth]]" height="[[imageHeight]]" sizing="cover" placeholder-icon="buildings" hidden="[[noImage]]"></triplat-image> -->
+			<!--	<tricomp-alert-message warning="" hidden$="[[_hideNoLocationMessage(hideMessage, building)]]">
+					<div>[[_noLocationDetectedErrorMessage]]</div>
+				</tricomp-alert-message> -->
+
+				<div class$="[[_computeLocationInfoClass(changeLocationType)]]">
+					<div>
+						<div style="font-size: 14px; font-weight: bold;">1 Station Lane {{_computeBuildingName(building.building)}}</div>
+						<div class="city" style="font-size: 14px;">Hornchurch,
+							{{building.city}}<template is="dom-if" if="{{building.stateProvince}}">, NULL</template>{{building.stateProvince}}<template is="dom-if" if="{{building.country}}">, </template>GB{{building.country}}
+						</div>
+					</div>
+					<!-- <span id="changeLocationLink" hidden$="[[!_isLinkType(changeLocationType, disabled)]]" class="tri-link change-location" tabindex="0">Change location</span> -->
+				</div>
+
+      </div>
+			   <paper-icon-button id="changeLocationIcon" icon="ibm-glyphs:search" class="search-icon" primary="" on-tap="_changeLocation" role="button" aria-label="Change location icon"></paper-icon-button>
+		  </div>
+
+      <iron-icon icon="completeDue:due" class="dueIcon"></iron-icon>
+        <div class="surveyInfo">
+            <h3>You have an open survey pending completion</h3>
+            <p>This is your regular site evaluation survey.</p>
+            <div style='border-top: 1px; border-bottom: 1px; padding-top: 1rem; padding-bottom: 1rem; min-height: 1px;'>
+                <iron-icon icon="completeIcons:questions" style="height: 106px; width: 130px;"></iron-icon>
+                <iron-icon icon="completeIcons:time" style="height: 109px; width: 130px;"></iron-icon>
+                <iron-icon icon="completeIcons:lock" style="height: 128px; width: 120px; padding-left: 25px;"></iron-icon>
+            </div>
+
+
+            <p style="font-size: 10px;">This survey has been sent by H&M Group to Helle Wagner, Site Engineer at Cheap Monday for immediate review and completion of the questions herein.</p>
+            <paper-button style="background:#D21027; color:#FFFFFF;" raised on-tap="_onStatsTapChild">Start Survey</paper-button>
+        </div>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: "cst-survey-complete",
+
+        _onStatsTapChild: function(e) {
+			this.fire('onStatsTapChild', {});
+		},
+
+		_openPopup: function(e) {
+			e.preventDefault();
+			this.fire('openPopupChild', {});
+		},
+
+    _computeBuildingClass: function(regularFontSize) {
+				return !regularFontSize ? "building" : "regular-building";
+			},
+
+    _changeLocation: function(e) {
+  					e.preventDefault();
+            this.fire('openPopupChild', {});
+  			}
+
+    });
+</script>

@@ -1,0 +1,299 @@
+<!-- IBM Confidential‌ - OCO Source Materials‌ - (C) COPYRIGHT IBM CORP. 2017 - The source code for this program is not published or otherwise‌ divested of its trade secrets, irrespective of what has been‌ deposited with the U.S. Copyright Office. -->
+
+<link rel="import" href="../triplat-icon/ibm-icons.html">
+
+<link rel="import" href="../triblock-popup/triblock-popup.html">
+<link rel="import" href="../triblock-responsive-layout/triblock-view-responsive-behavior.html">
+
+<link rel="import" href="../paper-input/paper-input.html">
+
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<link rel="import" href="tricomp-profile-card.html">
+
+
+<!--
+`tricomp-search-popup` is a triblock-popup with a search component
+
+Example:
+    <tricomp-search-popup>
+    </tricomp-search-popup>
+
+Example - type property:
+	Description: Set the type of search
+    <tricomp-search-popup type="person">
+    </tricomp-search-popup>
+
+Example - title property:
+	Description: Title of the popup
+    <tricomp-search-popup title="Title">
+    </tricomp-search-popup>
+
+Example - placeholder property:
+	Description: Set a placeholder message for the input field
+    <tricomp-search-popup placeholder="Placeholder">
+    </tricomp-search-popup>
+
+Example - scroller property:
+	Description: Use to set the scrollable container for a datasource. It's has to be used with a two-way biding
+    <tricomp-search-popup scroller="{{scroller}}">
+    </tricomp-search-popup>
+
+Example - searchValue property:
+	Description: The value of the input field that will be used to filter a datasource. It's has to be used with a two-way biding
+    <tricomp-search-popup search-value="{{value}}">
+    </tricomp-search-popup>
+
+Example - searchResult property:
+	Description: The results, after a datasource is filtered.
+    <tricomp-search-popup search-result="[[result]]">
+    </tricomp-search-popup>
+
+
+### Events
+
+Event Name | Description
+-----------|------------
+`search-item-selected` | Fired when a item in the table of results is selected
+-->
+
+
+<dom-module id="tricomp-search-popup">
+	<template>
+		<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning">
+			triblock-popup {
+				@apply(--layout-vertical);
+			}
+			:host(:not([small-screen])) triblock-popup {
+				top: 15% !important;
+				bottom: 15% !important;
+				width: 50% !important;
+			}
+				triblock-popup h2 {
+					margin-bottom: 0;
+					font-weight: 300;
+				}
+				:host(:not([small-screen])) triblock-popup h2 {
+					margin-top: 0;
+				}
+			.dialog-content {
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+				overflow: hidden;
+			}
+
+			paper-input iron-icon {
+				margin: 10px;
+			}
+			.icon-clear {
+				cursor: pointer;
+				--iron-icon-fill-color: var(--ibm-gray-30);
+			}
+
+			.container-results {
+				flex: 1;
+				margin-top: 1em;
+				overflow: auto;
+			}
+
+			div[tri-tbody] {
+				flex: none !important;
+			}
+				div[tri-tbody] div[tri-td] {
+					min-height: 20px;
+					height: auto !important;
+					justify-content: center;
+					font-size: 1em;
+				}
+			div[tri-tr] {
+				@apply(--layout-center);
+				cursor: pointer;
+			}
+
+			.title {
+				font-weight: lighter;
+			}
+
+			paper-input {
+				--paper-input-container-input:{
+   					font-size: 14px;
+   					font-family: var(--tri-font-family);
+   				};
+   				--paper-input-container-underline:{
+   					height: 2px;
+   				};
+   				--paper-input-container-color: var(--ibm-gray-30);
+			}
+
+			:host([small-screen]) triblock-popup {
+				padding: 10px;
+			}
+
+			.tri-h2 {
+				color: var(--iss-dark-blue-font);
+				font-size: 16px;
+				font-weight: normal;
+			}
+			paper-button{
+				max-width: 150px;
+				border-radius: 25px !important;
+				background: rgb(34, 49, 70) !important;
+    			display: block !important;
+    			margin: auto;
+    			margin-top: 3%;
+			}
+			:host(:not([small-screen])) paper-button{
+				display:none !important;
+			}
+
+		</style>
+
+		<triblock-popup id="searchPopup" with-backdrop hide-default-buttons="[[smallScreen]]" title="[[title]]">
+			<span class="title tri-h2" hidden$="[[smallScreen]]">[[title]]</span>
+
+			<div class="dialog-content">
+				<paper-input id="searchField" placeholder="[[placeholder]]" value="{{_searchValue}}" no-label-float>
+					<iron-icon icon="ibm:search" prefix></iron-icon>
+					<iron-icon class="icon-clear" icon="ibm-glyphs:clear-input" suffix on-tap="clearSearch" hidden="[[_hideClearBtn]]"></paper-icon-button>
+				</paper-input>
+
+				<div id="listContainer" class="container-results">
+					<div table-container hidden$="[[_hideTableOfResults(searchValue, searchResult)]]">
+						<div tri-fixed-table>
+							<div tri-tbody>
+								<template
+										is="dom-repeat"
+										items="[[searchResult]]"
+										observe="selected">
+									<div tri-tr on-tap="_selectItem">
+										<div tri-td>
+											<tricomp-profile-card data="[[item]]" search-value="[[searchValue]]" type="[[type]]"></tricomp-profile-card>
+										</div>
+									</div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+				<paper-button on-tap="close">close</paper-button>
+			</div>
+		</triblock-popup>
+	</template>
+</dom-module>
+
+<script>
+	Polymer({
+
+		is: "tricomp-search-popup",
+
+		behaviors: [
+			TriBlockViewResponsiveBehavior
+		],
+
+		properties: {
+			// Types supported: 'person' and 'building'
+			type: String,
+
+			// Title msg of the popup
+			title: String,
+
+			// Placeholder msg for the search input field
+			placeholder: String,
+
+			// Scrollable container
+			scroller: {
+				type: Object,
+				notify: true
+			},
+
+			// Value of the search field - It will be used by a external DS to filter
+			searchValue: {
+				type: String,
+				notify: true
+			},
+
+			// Array of results from the search
+			searchResult: Array,
+
+			// Value from the search field
+			_searchValue: {
+				type: String,
+				observer: '_observeSearchValue'
+			},
+
+			// Hide search clear buttons
+			_hideClearBtn: {
+				type: Boolean,
+				value: true
+			}
+		},
+
+		listeners: {
+			'iron-overlay-opened': '_popupOpen',
+			'iron-overlay-closed': '_popupClose',
+		},
+
+		attached: function() {
+			// Set the scroller container
+			this.set('scroller', this.$.listContainer);
+		},
+
+		// Open triblock-popup
+		open: function() {
+			this.$.searchPopup.openPopup();
+		},
+
+		// Close triblock-popup
+		close: function() {
+			this.$.searchPopup.closePopup();
+		},
+
+		// Clear search field
+		clearSearch: function() {
+			this.set("_searchValue", "");
+		},
+
+		// Listen for popup open
+		_popupOpen: function() {
+			this.clearSearch();
+		},
+
+		// Listen for popup close
+		_popupClose: function() {
+			this.clearSearch();
+		},
+
+		// Define when to show or hide the table of results
+		_hideTableOfResults: function(searchValue, results) {
+			return (searchValue == "") || ((searchValue !== "") && !results);
+		},
+
+		// Observe for _searchValue - Use debounce
+		_observeSearchValue: function(value) {
+			this._hideClearBtn = (value == "") ? true : false;
+
+			this.debounce(
+				"refreshSearchValue",
+				function() {
+					this.set("searchValue", value);
+				},
+				300
+			);
+		},
+
+		// Handle select item from the list
+		_selectItem: function(e) {
+			e.stopPropagation();
+
+			// Selected Data
+			var selectedData = e.model.item;
+
+			// Fire the selected item
+			this.fire("search-item-selected", selectedData);
+
+			// Close triblock-popup
+			this.close();
+		},
+
+	});
+</script>

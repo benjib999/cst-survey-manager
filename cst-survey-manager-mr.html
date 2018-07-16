@@ -1,0 +1,301 @@
+<link rel="import" href="../triplat-view-behavior/triplat-view-behavior.html">
+<link rel="import" href="../triplat-ds/triplat-ds.html">
+<link rel="import" href="../triplat-routing/triplat-routing.html">
+
+-- TRIRIGA PLATFORM COMPONENTS --
+<link rel="import" href="../triblock-popup/triblock-popup.html">
+<link rel="import" href="../triplat-image/triplat-image.html">
+
+<link rel="import" href="../google-chart/google-chart.html">
+
+<link rel="import" href="../paper-toast/paper-toast.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+
+
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+<link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
+
+<link rel="import" href="./art/custom-icons.html">
+<link rel="import" href="cst-banner.html">
+<link rel="import" href="cst-survey-inbox.html">
+<link rel="import" href="cst-survey-complete.html">
+<link rel="import" href="cst-survey-stats.html">
+
+<dom-module id="cst-survey-manager-mr">
+	<style>
+		/* This stuff is from the survey request */
+		.popup {
+			background: var(--triblock-popup-background-color);
+			@apply(--shadow-elevation-16dp);
+			padding: 30px;
+			@apply(--triblock-popup);
+		}
+
+		triblock-popup {
+			@apply(--layout-vertical);
+		}
+		triblock-popup[small-screen-width] {
+			padding: 10px;
+
+			@apply(--search-popup-small-screen-width);
+		}
+		triblock-popup:not([small-screen-width])  {
+			top: 15%;
+			bottom: 15%;
+			width: 50%;
+
+			@apply(--search-popup-not-small-screen-width);
+		}
+		triblock-popup[small-screen-height]:not([small-screen-width]) {
+			top: 5%;
+			bottom: 5%;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+		triblock-popup[medium-screen-width] {
+			width: 70%;
+		}
+		paper-material {
+			padding: 20px;
+			background-color: white;
+			margin-top: 30px;
+		}
+
+		paper-toolbar{
+			color: black;
+			background-color: white;
+			border: 1px solid #C8C8C8;
+			height: 100px;
+			padding: 25px
+		}
+
+		paper-item {
+			background-color: #D21027;
+		}
+
+		paper-listbox {
+			background-color: #D21027;
+			justify-content: center
+		}
+
+		paper-button {
+			background:#D21027;
+			color:#F5F5F5;
+		}
+
+		@media (max-width: 600px) {
+				paper-listbox {
+				background-color: #D21027;
+				justify-content: center;
+				display: flex;
+				flex: 1;
+			}
+		}
+
+		@media (min-width: 599px) {
+			div.topbar {
+				display: none;
+			}
+		}
+
+		div.fullContent {
+			background-color: #D21027;
+			display: flex;
+			flex-direction: row;
+			height: 100em;
+		}
+
+		div.center {
+			z-index: 0;
+			background-color: #F5F5F5;
+			flex: 90;
+		}
+
+		@media (max-width: 600px) {
+			div.fullContent {
+				flex-direction: column;
+			}
+		}
+
+		div.left, div.right {
+			z-index: 2;
+			min-height: 1px;
+			min-width: 80px;
+			width: 80px;
+		}
+		div.right {
+			float: right;
+		}
+
+		div.left {
+			float: left;
+		}
+
+		@media (max-width: 600px) {
+			div.left, div.right {
+				display: none;
+			}
+		}
+
+	</style>
+	<template>
+
+		<triplat-route id="inboxRoute" name="inbox" path="/"></triplat-route>
+		<triplat-route id="completedRoute" name="completed" path="/completed"></triplat-route>
+		<triplat-route id="statsRoute" name="stats" path="/stats"></triplat-route>
+
+		<triplat-ds name="openSurveys" data={{openSurveys}}></triplat-ds>
+
+		<paper-toolbar>
+			<cst-banner></cst-banner>
+		</paper-toolbar>
+
+		<div class="topbar">
+			<paper-listbox>
+				<paper-item><paper-icon-button on-tap="_onInboxTap" icon="sidepanel:inbox"></paper-icon-button></paper-item>
+				<paper-item><paper-icon-button on-tap="_onCompletedTap" icon="sidepanel:complete"></paper-icon-button></paper-item>
+				<paper-item><paper-icon-button on-tap="_onStatsTap" icon="sidepanel:chart"></paper-icon-button></paper-item>
+			</paper-listbox>
+		</div>
+
+		<div class="fullContent">
+			<div class="left">
+				<paper-listbox>
+					<paper-item><paper-icon-button on-tap="_onInboxTap" icon="sidepanel:inbox"></paper-icon-button></paper-item>
+					<paper-item><paper-icon-button on-tap="_onCompletedTap" icon="sidepanel:complete"></paper-icon-button></paper-item>
+					<paper-item><paper-icon-button on-tap="_onStatsTap" icon="sidepanel:chart"></paper-icon-button></paper-item>
+				</paper-listbox>
+			</div>
+			<div class="center">
+				<triplat-route-selector>
+
+					<iron-pages>
+						<section route="inbox" default-route>
+							<cst-survey-inbox></cst-survey-inbox>
+						</section>
+
+
+						<section route="completed">
+							<cst-survey-complete></cst-survey-complete>
+						</section>
+
+
+						<section route="stats">
+							<cst-survey-stats></cst-survey-stats>
+						</section>
+					</iron-pages>
+
+				</triplat-route-selector>
+
+			</div>
+			<div class="right">
+
+			</div>
+
+		</div>
+
+		<triblock-popup class="popup" id="locationPopup" with-backdrop>
+			<div>
+				<h2>Please input your location</h2>
+				<form>
+					<input type="text" name="location">
+					<input type="submit">
+				</form>
+			</div>
+		</triblock-popup>
+
+	</template>
+</dom-module>
+
+<script>
+
+	tday=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
+	tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+
+	function GetClock(){
+	var d=new Date();
+	var nday=d.getDay(),nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getFullYear();
+	var nhour=d.getHours(),nmin=d.getMinutes();
+	if(nmin<=9) nmin="0"+nmin
+
+	document.getElementById('clockbox').innerHTML=""+tday[nday]+", "+(nmonth+1)+"."+ndate+"."+nyear;
+	}
+
+	window.onload=function(){
+	GetClock();
+	setInterval(GetClock,1000);
+	}
+
+	function displayPanel(){
+		if(document.getElementById("toBeDisplayed").style.display=="none"){
+			document.getElementById("toBeDisplayed").style.display="table-row";
+			document.getElementById("toBeDisplayed").className+=" show";
+		}
+		else{
+			document.getElementById("toBeDisplayed").style.display="none";
+		}
+	}
+	function displayMessage(){
+		alert("Saved");
+		document.getElementById("toBeDisplayed").style.display="none"
+	}
+
+	function countData(){
+		var row = document.getElementById(table).rows.length;
+		console.log(row);
+	}
+
+	Polymer({
+
+		is: "cst-survey-manager-mr",
+
+		behaviors: [TriPlatViewBehavior],
+
+		ready: function() {
+			this.addEventListener('onStatsTapChild', this._onStatsTap);
+			this.addEventListener('onInboxTapChild', this._onInboxTap);
+			this.addEventListener('onCompletedTapChild', this._onCompletedTap);
+			this.addEventListener('openPopupChild', this._openPopup);
+		},
+
+		_onInboxTap: function(e) {
+			this.$.inboxRoute.navigate({});
+		},
+
+		_onCompletedTap: function(e) {
+			this.$.completedRoute.navigate({});
+		},
+
+		_onStatsTap: function(e) {
+			this.$.statsRoute.navigate({});
+		},
+
+		_openPopup: function(e) {
+			e.preventDefault();
+			this.$.locationPopup.openPopup();
+		},
+
+		_onSaveTap: function(){
+			var n = document.getElementById("feedbackText");
+			if(n.value === ""){
+				n.style.border="1px solid red";
+				alert("Field Required");
+			}
+			else
+			{
+				this.$.toast.show();
+				n.value="";
+			}
+		}
+
+	});
+</script>
