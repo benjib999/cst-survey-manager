@@ -1,0 +1,151 @@
+<dom-module id="cst-banner">
+    <style>
+        div.bannerlogo {
+			display: flex;
+		}
+
+		.bannerlogo {
+			position: relative;
+			flex: 1;
+			top: 90%;
+			width: 200px;
+			height: 200px;
+		}
+
+		div.logos {
+			display: flex;
+		}
+
+		@media (max-width: 1100px) {
+			div.logos {
+				display: none;
+			}
+		}
+
+		div.loginInfo {
+			display: flex;
+            position: absolute;
+            white-space: nowrap;
+            top : 90%;
+            right: 0%;
+		}
+
+        .userInfo {
+            padding-right: 10px;
+            padding-left: 10px;
+            right: 0px;
+            position: relative;
+        }
+
+        @media (max-width: 600px) {
+			.userInfo {
+				position: static;
+			}
+		}
+
+        .user-image img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 1px;
+        }
+
+        #image-id {
+            z-index: 3;
+            top: -35px;
+            --triplat-image-iron-image: {
+                border-radius: 50%;
+                border: 2px solid grey;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #image-id {
+                display: none;
+            }
+        }
+
+        #clockbox {
+            position: absolute;
+            top: -70px;
+			color: #787878;
+			font-size: 14px;
+			letter-spacing: -0.29px;
+			font-family: LucidaGrande-Bold;
+            right: 0px;
+		}
+
+		#loginName {
+			color: #787878;
+			font-size: 14px;
+			letter-spacing: -0.29px;
+			font-family: LucidaGrande-Bold;
+		}
+        #triCustomImage{
+            border-radius: 50%;
+        }
+        #sizedImgDiv{
+            border-radius: 50%;
+        }
+    </style>
+
+    <template>
+        <triplat-ds id="currentUserDS" name="currentUser" data="{{currentUser}}"></triplat-ds>
+
+        <div class="bannerDiv">
+                <iron-icon class="bannerlogo" icon="custom-icons:H&M-logo" style="position: absolute; top: -30%;"></iron-icon>
+                <paper-icon-button on-tap="_onInboxTapChild" style="position: absolute; height: 90px; width: 100px; top: -50%; left: -0.4%"></paper-icon-button>
+
+                <div class="logos">
+                    <iron-icon class="bannerlogo" icon="custom-icons:cheap-monday-logo" 
+                        style="position: absolute; height: 230px; width: 250px; left: 8%; top: -30%;"></iron-icon>
+                    <iron-icon class="bannerlogo" icon="custom-icons:other-stories-logo" 
+                        style="position: absolute; left: 20%; top: 0%;"></iron-icon>
+                    <iron-icon class="bannerlogo" icon="custom-icons:monku-logo" 
+                        style="position: absolute; left: 37%; top: -51%"></iron-icon>
+                    <iron-icon class="bannerlogo" icon="custom-icons:cos-logo" 
+                        style="position: absolute;  height: 170px; width: 170px; left: 50%; top: -30%"></iron-icon>
+                    <iron-icon class="bannerlogo" icon="custom-icons:weekday-logo" 
+                        style="position: absolute; left: 60%; top: -20%"></iron-icon>
+                </div>
+            </div>
+            <div class="loginInfo">
+                <triplat-image id="image-id" class="userInfo" placeholder-icon="user-profile"
+                    src="[[currentUser.image]]" width="100" height="100" sizing="cover">
+                </triplat-image>
+                <h1 id="loginName" class="userInfo">Welcome, {{currentUser.firstName}}</h1>
+                <h1 id="clockbox"></h1>
+            </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: "cst-banner",
+
+        _onInboxTapChild: function(e) {
+			this.fire('onInboxTapChild', {});
+		},
+
+        getImage: function() {
+            console.log('current user');
+            var image = this.$.currentUser.image;
+            if(!image) {
+                return "";
+            }
+            return image;
+        },
+
+        _getImageURL: function(baseURL, imagePath) {
+            if (!baseURL || !imagePath) {
+                return "";
+            }
+            console.log(baseURL + imagePath)
+
+            return baseURL + imagePath;
+        }
+
+    });
+</script>

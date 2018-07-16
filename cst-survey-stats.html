@@ -1,0 +1,234 @@
+<dom-module id="cst-survey-stats">
+    <style>
+        div.surveyInfo {
+			width: 50%;
+			height: 50%;
+			overflow: auto;
+			margin: auto;
+			position: absolute;
+			top: 180px; left: 0; bottom: 0; right: 0;
+			/*border: solid #D21027;*/
+		}
+		@media (max-width: 500px) {
+			div.surveyInfo {
+				top: 250px;
+			}
+		}
+		.locationarea {
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+		@media (max-width: 500px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+        div.surveyInfos {
+			width: 50%;
+			height: 50%;
+			overflow: auto;
+			margin: auto;
+			position: absolute;
+			top: -2.5cm; 
+			left: 0; 
+			bottom: 0; 
+			right: 0;
+		}
+		@media (max-width: 500px) {
+			div.surveyInfo {
+				top: 250px;
+			}
+		}
+		.locationarea {
+            z-index: 1;
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+		@media (max-width: 500px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+        
+		table {
+			position:relative;
+			border-collapse: collapse;
+			border-spacing: 0;
+			width: 100%;
+			border: 1px solid #ddd;
+			overflow: auto;
+		}
+		th, td {
+			
+			padding: 20px !important;
+			width:300px !important;
+			border:1px solid #fff !important;
+		}
+		th {
+			background: #e3e4e5 !important;
+			text-align: center !important;
+		}
+		tr:nth-child(even){background-color: #f2f2f2}
+			input[type=text] {
+			border-right: none;
+			border-left: none;
+			border-top:none;
+			-webkit-transition: 0.5s;
+			outline: none;
+		}
+		
+		
+		.show{
+			-webkit-transition: opacity 2s !important;
+			-moz-transition: opacity 2s !important;
+			-o-transition: opacity 2s !important;
+			transition: opacity 2s !important;
+			opacity: 1 !important;
+		}
+		#toBeDisplayed{
+			display:none;
+			opacity:0;
+			-webkit-transition: opacity 2s;
+			-moz-transition: opacity 2s;
+			-o-transition: opacity 2s;
+			transition: opacity 2s;
+		}
+		#tick{
+			position: relative;
+			/*bottom:1.99cm;*/
+			bottom: -90px;
+			left:320px;		
+		}
+		#open{
+			position: relative;
+			margin-right:3cm;
+		}
+		.circleContainer {
+			width: 200px;
+			position: absolute;
+			height: 90px;
+			width: 90px;
+			top: 97%;
+			left: 29%;
+		}
+		#openArrow{
+			right:0;
+			 float: right;
+			 margin-right: 10px;
+			 opacity: 0;
+			 cursor: pointer;
+		}
+		#openArrow:hover{
+			opacity:1;
+			transition: opacity 1s;
+		}
+			
+    </style>
+
+    <template>
+        <div class="surveyInfos" id="modal_body">      	
+            <h3>Welcome to the stats page</h3>
+            <table id="table" border="1">
+                <!-- The Row Number 0 -->
+                <th>CATEGORY</th>
+                    <th>QUESTION</th>
+                    <th>STATUS</th>
+                
+                <!-- End Row Number 0 -->
+                <tr>
+                    <td>Delivery</td>
+                    <td>Was the move completed on time?</td>
+                    <td>COMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+
+                <tr>
+                    <td>Overall Satisfaction</td>
+                    <td>Are you happy at your new place?</td>
+                    <td>COMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+
+                <tr>
+                    <td>Overall Satisfaction</td>
+                    <td>Are you satisfied with the move?</td>
+                    <td>INCOMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+
+                <tr>
+                    <td>Quality</td>
+                    <td>Was the mover professional?</td>
+                    <td>INCOMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+				<tr>
+                    <td>Quality</td>
+                    <td>Was the mover professional?</td>
+                    <td>INCOMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+                <tr>
+                    <td>Quality</td>
+                    <td>Was the mover professional?</td>
+                    <td>INCOMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+                <tr>
+                    <td>Quality</td>
+                    <td>Was the mover professional?</td>
+                    <td>INCOMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+                <tr>
+                    <td>Quality</td>
+                    <td>Was the mover professional?</td>
+                    <td>INCOMPLETE<img on-tap="_openModal" id="openArrow" src="./art/open.png" alt="tick" height="20px" width="20px"></td>
+                </tr>
+                 
+
+            </table>
+            
+		</div>
+        	
+    </template>
+</dom-module>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+	 
+	Polymer({
+
+		is: "cst-survey-stats",
+
+		_onInboxTap: function(e) {
+			this.$.inboxRoute.navigate({});
+		},
+		_onCompletedTap: function(e) {
+			navigate("/completed");
+		},
+		_onStatsTap: function(e) {
+			this.$.statsRoute.navigate({});
+		},
+		_openModal: function(e) {
+			
+			e.preventDefault();
+			this.fire('openModalPopupChild', {});         
+		},
+		
+		_onmodalLoad: function(){
+			modalPopup.fadeIn("slow");
+		}
+
+	});
+
+	$(document).ready(function(){
+		$("#openArrow").click(function(){
+			$("#modalPopup").fadeIn("slow");
+		});
+
+});
+	
+</script>

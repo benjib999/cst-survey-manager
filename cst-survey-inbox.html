@@ -1,0 +1,354 @@
+<dom-module id="cst-survey-inbox">
+    <style>
+		.locationarea {
+            z-index: 1;
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+
+		@media (max-width: 600px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+
+        div.surveyInfo {
+			width: 65%;
+			height: 400px;
+			overflow: auto;
+			margin: auto;
+			position: relative;
+			top: 120px; left: 0; bottom: 0; right: 0;
+			z-index: 100;
+			/*border: solid #D21027;*/
+		}
+
+		@media (max-width: 600px) {
+			div.surveyInfo {
+				top: 120px;
+			}
+		}
+
+		.locationarea {
+			width: 440px;
+			height: 100px;
+			position: absolute;
+			top: 160px;
+			left: 0%;
+		}
+
+		@media (max-width: 600px) {
+			.locationarea {
+				left: -15%;
+				top: 200px;
+			}
+		}
+
+        .pie {
+            position: absolute;
+            top: 600px;
+            left: 40%;
+        }
+
+        @media (max-width: 1000px) {
+			.pie {
+            	position: absolute;
+            	top: 870px;
+            	left: 20%;
+			}
+        }
+
+		@media (max-width: 600px) {
+			.pie {
+				left: 0%;
+			}
+		}
+
+		#dropDownBox {
+			background: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0Ljk1IDEwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9LmNscy0ye2ZpbGw6IzQ0NDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPmFycm93czwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNC45NSIgaGVpZ2h0PSIxMCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxLjQxIDQuNjcgMi40OCAzLjE4IDMuNTQgNC42NyAxLjQxIDQuNjciLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMy41NCA1LjMzIDIuNDggNi44MiAxLjQxIDUuMzMgMy41NCA1LjMzIi8+PC9zdmc+) no-repeat 95% 50%;
+				-moz-appearance: none; 
+				-webkit-appearance: none; 
+				appearance: none;
+			    /* and then whatever styles you want*/
+				height: 30px; 
+				width: 100px;
+				padding: 5px;
+				background-color: white;
+		}
+
+        /*  */
+
+		table {
+			position:relative;
+			border-collapse: collapse;
+			border-spacing: 0;
+			width: 100%;
+			border: 1px solid #ddd;
+			overflow: auto;
+		}
+
+		th, td {
+			text-align: left;
+			padding: 8px;
+			width:300px;
+			border:1px solid #fff;
+		}
+
+		th {
+			background: #e3e4e5;
+		}
+
+		tr:nth-child(even){background-color: #f2f2f2}
+
+			input[type=text] {
+
+			border-right: none;
+			border-left: none;
+			border-top:none;
+			-webkit-transition: 0.5s;
+
+			outline: none;
+		}
+
+		input[type="text"]#feedbackText::-webkit-input-placeholder {
+			color: #e3e4e5;
+			font-size: 10px;
+		}
+
+		input[type=text]:focus {
+			border-bottom: 3px solid #555;
+			transition: 0.5s;
+		}
+
+		textarea#commentText::-webkit-input-placeholder{
+			color: #e3e4e5;
+			font-size: 10px;
+		}
+		.show{
+			-webkit-transition: opacity 2s !important;
+			-moz-transition: opacity 2s !important;
+			-o-transition: opacity 2s !important;
+			transition: opacity 2s !important;
+			opacity: 1 !important;
+		}
+
+
+		#toBeDisplayed{
+			display:none;
+			opacity:0;
+			-webkit-transition: opacity 2s;
+			-moz-transition: opacity 2s;
+			-o-transition: opacity 2s;
+			transition: opacity 2s;
+		}
+
+		#tick{
+			position: relative;
+			bottom:1.2cm;
+		}
+
+		#open{
+			position: relative;
+			margin-right:3cm;
+		}
+
+		.circleContainer {
+			width: 200px;
+			position: absolute;
+			height: 90px;
+			width: 90px;
+			top: 640px;
+			left: 21%;
+		}
+
+		@media (max-width: 600px) {
+			.circleContainer {
+				top: 720px;
+			}
+		}
+
+		#openArrow{
+			right:0;
+			 float: right;
+			 margin-right: 10px;
+			 opacity: 0;
+			 cursor: pointer;
+		}
+
+		#openArrow:hover{
+			opacity:1;
+		}
+    </style>
+
+    <template>
+
+        <triplat-ds id="openSurveys" name="openSurveys" data={{openSurveys}}></triplat-ds>
+
+        <iron-icon class="locationarea" icon="location:V-2.0"></iron-icon>
+        <div class="locationarea">
+            <paper-icon-button on-tap="_openPopup" style="width: 20px; height: 20px; position: absolute; left: 87%;"></paper-icon-button>
+        </div>
+        <div class="surveyInfo" style="flex: 4;">
+            <div class="surveyTable">
+                <table id="table" border="1">
+                    <tr>
+                        <th style="min-width: 200px;">TRIRIGA ID</th>
+                        <th style="min-width: 186px;">SURVEY TYPE</th>
+                        <th>DUE DATE</th>
+                        <th>STATUS</th>
+                        <th>PROGRESS</th>
+					</tr>
+					<tr>
+						<th>
+							Sort by:
+							<select id="dropDownBox" value="{{sortVal::change}}">
+								<option value="id">Tririga ID</option>
+								<option value="type">Survey Type</option>
+							</select>
+						</th>
+						<th>
+							<div id="filterText">
+								<paper-input  label="Filter" type="text" value="{{filterVal::input}}"></paper-input>
+							</div>
+						</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+                    <template is="dom-repeat" items="{{openSurveys}}" as="survey" filter="{{_filter(filterVal)}}" sort="{{_sort(sortVal)}}">
+                        <tr>
+                            <td>{{survey.id}}</td>
+                            <td>{{survey.name}} 
+                                <paper-menu-button>
+                                    <paper-icon-button icon="elipsis:elipsis" class="dropdown-trigger" ></paper-icon-button>
+                                    <paper-menu class="dropdown-content">
+                                        <paper-item style="cursor: pointer;" on-tap="_onCompletedTapChild">{{_iconInfo(survey)}}</paper-item>
+                                    </paper-menu>
+                                </paper-menu-button>
+                            </td>
+                            <td>{{_dueDate(survey.completedDate)}}</td>
+                            <td>{{survey.status}}</td>
+                            <td>{{_progress(survey)}}%</td>
+                        </tr>
+                    </template>
+                </table>
+            </div>
+        </div>
+        <div class="circleContainer">
+            <iron-icon style="position: absolute; height: 90px; width: 90px;" icon="circle:blue"></iron-icon>
+			<!-- <h1 style="position: absolute; top: 97%; left: 30.3% font-size: 20px;">10</h1> -->
+			<div style="position: absolute;  left: 18%; top: -30px">
+				<h1 style="position: absolute; top: 35px; font-size: 40px;">10</h1>
+			</div>
+			<div style="position: absolute; left: 20%; top: 50px; ">
+				<h6 style="font-size: 10px"> Surveys</h6>
+			</div>
+			<iron-icon style="position: absolute; height: 90px; width: 90px; left: 90%" icon="circle:red"></iron-icon>
+			<div style="position: absolute; left:118%; top: -30px">
+				<h1 style="position: absolute; top: 35px; font-size: 40px;">2</h1>
+			</div>
+			<div style="position: absolute; left: 110%; top: 50px;">
+				<h6 style="font-size: 10px"> Overdue</h6>
+			</div>
+
+            <iron-icon icon="warning:V-2.0" style="position: absolute; left: 0%; top: 90%; height: 12px; width: 12px;"></iron-icon>
+            <p style="position: absolute; left: 27%; top: 80px; width: 200px;">You have one or more overdue surveys</p>
+		</div>
+		<div id="chart1">
+			<google-chart
+				class="pie"
+				type='pie'
+				options='{"title": "Progress Breakdown",
+					"backgroundColor": "transparent",
+					"width": "600",
+					"height": "450"}'
+				cols='[{"label":"Status", "type":"string"}, {"label":"No. complete", "type":"number"}]'
+				rows='[["New", 21],["In Progress", 9],["Completed", 5]]'>
+			</google-chart>
+		</div>
+		
+    </template>
+
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: "cst-survey-inbox",
+
+		_onCompletedTapChild: function(e) {
+			this.fire('onCompletedTapChild', {});
+		},
+
+		_onStatsTap: function(e) {
+			this.fire('onStatsTapChild', {});
+		},
+
+		_openPopup: function(e) {
+			e.preventDefault();
+			this.fire('openPopupChild', {});
+		},
+		
+		_dueDate: function(due) {
+			var date=new Date(due)	
+			return(date.toLocaleDateString("en-us"));
+		},
+
+		_progress: function(item) {
+			progress = (item.surveyScore/item.totalSurveyScore) * 100;
+			if (isNaN(progress)) {
+				return 0;
+			}
+			else {
+				return (progress);
+			}
+		},
+
+		_navigatePlace: function(e) {
+			if(this._iconInfo(e.model.survey) === 'Resume') {
+				this._onStatsTap();
+			}
+				this._onCompletedTapChild();
+		},
+
+        _iconInfo: function(item) {
+            if (this._progress(item) > 0) {
+                return "Resume";
+            }
+            else {
+                return "Start";
+            }
+        },
+
+		_filter: function(val) {  
+			return function(item) {
+				if (!val) return true;
+				if (!item) return false;
+				return (item.name && ~item.name.indexOf(val));
+			};
+		},
+
+		_sort: function(val) {  
+			switch(val) {
+				case 'id':
+				return function(a, b) {
+					if (a.id === b.id) return 0;
+					return a.id < b.id ? -1 : 1;
+				};
+				case 'type':
+				return function(a, b) {
+					if (a.name === b.name) return 0;
+					return a.name < b.name ? -1 : 1;
+				};
+			}
+		}
+
+    });
+
+    
+
+</script>
